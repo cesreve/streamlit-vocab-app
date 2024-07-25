@@ -1,2 +1,2 @@
-# streamlit-resume
-Code for my resume using streamlit
+# streamlit-vocab-app
+Code for my learning vocabulary app
