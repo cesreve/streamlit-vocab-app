@@ -15,23 +15,13 @@ def get_audio_base64(text):
     return f'<audio controls src="data:audio/mpeg;base64,{b64}"/>'
 
 # --- Data ---
-#data = {
-#    'Category': ['Adjective', 'Adjective', 'Adjective', 'Verb', 'Verb', 'Verb'],
-#    'Subcategory': ['Color', 'Size', 'Emotion', 'Movement', 'Action', 'State'],
-#    'French': ['rouge', 'grand', 'heureux', 'courir', 'manger', 'dormir'],
-#    'Russian': ['красный', 'большой', 'счастливый', 'бегать', 'есть', 'спать']
-#}
 data = df = pd.read_csv("data.csv")  # Uncomment to load from CSV
-
 df = pd.DataFrame(data)
-
 
 # --- Streamlit App ---
 st.title(':flag-fr: French-Russian :flag-ru:')
 
 # --- Initial Values for Filters and Checkbox ---
-#if "selected_categories" not in st.session_state:
-#    st.session_state.selected_categories = df["Category"].unique()  # All categories initially
 if "show_french" not in st.session_state:
     st.session_state.show_french = True
 categories = df["Category"].unique()  # All categories initially
