@@ -88,8 +88,4 @@ if not filtered_df.empty:
             escape=False, formatters={"Listen": lambda x: x}
         ),
         unsafe_allow_html=True,
-<<<<<<< HEAD
     )
-=======
-    )
->>>>>>> d6ec5c63d4d00aa95d9a210febfbb805ad576e4b
