@@ -14,13 +14,19 @@ def get_audio_base64(text):
     b64 = base64.b64encode(fp.read()).decode()
     return f'<audio controls src="data:audio/mpeg;base64,{b64}"/>'
 
-# --- Data ---
-data = df = pd.read_csv("data.csv")  # Uncomment to load from CSV
-df = pd.DataFrame(data)
+# --- Load CSV Data ---
+@st.cache_data
+def load_data():
+    try:
+        data = pd.read_csv("data.csv")
+        return data
+    except FileNotFoundError:
+        st.error("Error: Data file 'data.csv' not found.")
+        st.stop()
 
 # --- Streamlit App ---
 st.title(':flag-fr: French-Russian :flag-ru:')
-
+df = load_data()
 # --- Initial Values for Filters and Checkbox ---
 if "show_french" not in st.session_state:
     st.session_state.show_french = True
@@ -44,7 +50,7 @@ with st.sidebar:
     selected_subcategories = st.multiselect('Select Subcategories', available_subcategories, default=available_subcategories)
 
 # --- Filter DataFrame ---
-if not selected_categories and not available_subcategories:
+if len(selected_categories) == 0 and len(available_subcategories) == 0:
     st.warning("Please select at least one category or subcategory.")
     filtered_df = pd.DataFrame(columns=df.columns)  # Empty DataFrame
 else:
