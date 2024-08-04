@@ -50,7 +50,7 @@ with st.sidebar:
     selected_subcategories = st.multiselect('Select Subcategories', available_subcategories, default=available_subcategories)
 
 # --- Filter DataFrame ---
-if len(selected_categories) == 0 and len(available_subcategories) == 0:
+if not selected_categories and not available_subcategories:
     st.warning("Please select at least one category or subcategory.")
     filtered_df = pd.DataFrame(columns=df.columns)  # Empty DataFrame
 else:
@@ -81,11 +81,42 @@ if len(filtered_df) > 0:
     num_words = st.slider('Number of Words', min_value=1, max_value=len(filtered_df), value=5)
     displayed_df = filtered_df[columns_to_show].head(num_words)
 
+
+####
+def create_scrollable_table(df):
+    """Creates a scrollable HTML table from a pandas DataFrame."""
+
+    html = """
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+    <table>
+        <thead>
+            <tr>
+                <th>{}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {}
+        </tbody>
+    </table>
+    """.format(
+        ", ".join(df.columns),
+        "<tr>" + "<td>" + "</td><td>".join(df.columns) + "</td></tr>\n".join(df.to_numpy().tolist())
+    )
+
+    return html
+
 # --- Display DataFrame with HTML for Audio ---
 if not filtered_df.empty:
-    st.write(
-        displayed_df.to_html(
-            escape=False, formatters={"Listen": lambda x: x}
-        ),
-        unsafe_allow_html=True,
-    )
+# Display the scrollable table
+    st.write(create_scrollable_table(displayed_df), unsafe_allow_html=True)
