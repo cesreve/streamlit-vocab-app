@@ -25,6 +25,10 @@ def load_data():
         st.stop()
 
 # --- Streamlit App ---
+st.set_page_config(
+        page_title="Russian Vocabulary",
+        page_icon=':ru:'
+)
 st.title(':flag-fr: French-Russian :flag-ru:')
 df = load_data()
 # --- Initial Values for Filters and Checkbox ---
@@ -50,7 +54,7 @@ with st.sidebar:
     selected_subcategories = st.multiselect('Select Subcategories', available_subcategories, default=None)
 
 # --- Filter DataFrame ---
-if not selected_categories and not available_subcategories:
+if len(selected_categories) == 0 and len(available_subcategories) == 0:
     st.warning("Please select at least one category or subcategory.")
     filtered_df = pd.DataFrame(columns=df.columns)  # Empty DataFrame
 else:
@@ -66,7 +70,7 @@ else:
 # --- Show/Hide Columns ---
 col1, col2 = st.columns(2)
 with col1:
-    show_russian = st.checkbox('Show Russian')
+    show_russian = st.checkbox('Show Russian', value=True)
 with col2:
     show_french = st.checkbox('Show French', value=st.session_state.show_french)
 
@@ -81,42 +85,11 @@ if len(filtered_df) > 0:
     num_words = st.slider('Number of Words', min_value=1, max_value=len(filtered_df), value=5)
     displayed_df = filtered_df[columns_to_show].head(num_words)
 
-
-####
-def create_scrollable_table(df):
-    """Creates a scrollable HTML table from a pandas DataFrame."""
-
-    html = """
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            overflow-x: auto;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
-    <table>
-        <thead>
-            <tr>
-                <th>{}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {}
-        </tbody>
-    </table>
-    """.format(
-        ", ".join(df.columns),
-        "<tr>" + "<td>" + "</td><td>".join(df.columns) + "</td></tr>\n".join(df.to_numpy().tolist())
-    )
-
-    return html
-
 # --- Display DataFrame with HTML for Audio ---
 if not filtered_df.empty:
-# Display the scrollable table
-    st.write(create_scrollable_table(displayed_df), unsafe_allow_html=True)
+    st.write(
+        displayed_df.to_html(
+            escape=False, formatters={"Listen": lambda x: x}
+        ),
+        unsafe_allow_html=True,
+    )
