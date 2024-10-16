@@ -41,13 +41,13 @@ with st.sidebar:
     selected_categories = st.multiselect(
         "Select Categories",
         df["Category"].unique(),
-        default=categories,
+        default=None,
         key="selected_categories",
     )
 
     available_subcategories = df.loc[df["Category"].isin(selected_categories), "Subcategory"].unique()
 
-    selected_subcategories = st.multiselect('Select Subcategories', available_subcategories, default=available_subcategories)
+    selected_subcategories = st.multiselect('Select Subcategories', available_subcategories, default=None)
 
 # --- Filter DataFrame ---
 if not selected_categories and not available_subcategories:
